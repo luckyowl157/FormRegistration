@@ -86,7 +86,7 @@ export default function Form({ }) {
 
 
   const isPasswordStrong = (password: string): boolean => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[`!@#$%^&*]).{6,}$/;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[`!@#$%^&*.,\-_()+=|\\/}{'";:/?<>]).{6,}$/;
     return regex.test(password);
   };
 
