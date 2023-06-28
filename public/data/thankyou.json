@@ -1,0 +1,8 @@
+{
+  "title": "Thank you!",
+  "text": "You have been successfully registred!",
+  "button": {
+    "text": "Visit Home Page",
+    "href": "/"
+  }
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactElement } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router';
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -20,16 +20,9 @@ export default function Form({ }) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isShowPassword, setIsShowPassword] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false)
 
   const router = useRouter()
-
-  useEffect(() => {
-    const isUserRegistered = localStorage.getItem('isRegistered')
-    if(isUserRegistered) {
-      setIsAuthenticated(true)
-    }
-  }, [])
 
   useEffect(() => {
     setErrors({})
@@ -55,8 +48,9 @@ export default function Form({ }) {
       return
     }
 
+
     if (!isPasswordStrong(password)) {
-      setErrors({ ...errors, password: 'Password should contain at least one uppercase letter, one lowercase letter, and minimum 6 characters' })
+      setErrors({ ...errors, password: 'Password should contain at least one uppercase letter, one lowercase letter, one special character and minimum 6 characters' })
       return
     }
 
@@ -71,8 +65,6 @@ export default function Form({ }) {
         confirmPassword
       })
       console.log('Registration successful:', response.data.userData)
-      localStorage.setItem('isRegistered', 'true'),
-      setIsAuthenticated(true)
       router.push('/success')
     } catch (error: any) {
       console.log('Registration Error:', error)
@@ -88,20 +80,20 @@ export default function Form({ }) {
     setIsShowPassword(!isShowPassword)
   }
 
+  const toggleConfirmPassword = () => {
+    setIsShowConfirmPassword(!isShowConfirmPassword)
+  }
+
+
   const isPasswordStrong = (password: string): boolean => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[`!@#$%^&*]).{6,}$/;
     return regex.test(password);
   };
 
   const validateEmail = (email: string): boolean => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regex = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
     return regex.test(email);
   };
-
-  if(isAuthenticated) {
-    router.push('/')
-    return null
-  }
 
   return (
     <section className={s.formSection}>
@@ -116,7 +108,10 @@ export default function Form({ }) {
               onChange={(e) => setName(e.target.value)}
               className={errors.name ? s.errorInput : ''}
             />
-            {errors.name ? <span className={s.errorText}>{errors.name}</span> : ''}
+            {errors.name
+              ? <span className={s.errorText}>{errors.name}</span>
+              : ''
+            }
           </div>
           <div className={s.formGroup}>
             <label htmlFor='lastname'>Last Name</label>
@@ -167,19 +162,33 @@ export default function Form({ }) {
               onChange={(e) => setPassword(e.target.value)}
               className={errors.password ? s.errorInput : ''}
             />
-            <span className={s.showPassword} onClick={togglePassword}>{isShowPassword ? <EyeOff /> : <Eye />}</span>
+            <span
+              className={s.showPassword}
+              onClick={togglePassword}>
+              {isShowPassword
+                ? <EyeOff />
+                : <Eye />
+              }
+            </span>
             {errors.password && <span className={s.errorText}>{errors.password}</span>}
-
           </div>
           <div className={s.formGroup}>
             <label htmlFor='confirmPassword'>Confirm Password</label>
             <input
               id='confirmPassword'
-              type='password'
+              type={isShowConfirmPassword ? 'text' : 'password'}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className={errors.confirmPassword ? s.errorInput : ''}
             />
+            <span
+              className={s.showPassword}
+              onClick={toggleConfirmPassword}>
+              {isShowConfirmPassword
+                ? <EyeOff />
+                : <Eye />
+              }
+            </span>
             {errors.confirmPassword && <span className={s.errorText}>{errors.confirmPassword}</span>}
           </div>
           {errors.general && <span className={s.errorText}>{errors.general}</span>}

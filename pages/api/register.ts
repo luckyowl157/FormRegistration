@@ -28,10 +28,12 @@ export default function handler(
     }
   
     res.status(200).json({ 
-      message: 'Registration successful' ,
+      message: 'Registration successful',
       userData
     })
   } else {
-    res.status(404).json({ message: 'Not found' })
+    res.status(404).json({ 
+      message: 'Not found' 
+    })
   }
 }
