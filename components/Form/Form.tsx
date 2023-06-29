@@ -100,7 +100,7 @@ export default function Form({ }) {
       <div className={s.formWrap}>
         <form onSubmit={handleSubmit} autoComplete='none'>
           <div className={s.formGroup}>
-            <label htmlFor='name'>First Name</label>
+            <label htmlFor='name'>First Name <span className={s.required}>*</span></label>
             <input
               id='name'
               type='text'
@@ -134,7 +134,7 @@ export default function Form({ }) {
             />
           </div>
           <div className={s.formGroup}>
-            <label htmlFor='email'>Email</label>
+            <label htmlFor='email'>Email <span className={s.required}>*</span></label>
             <input
               id='email'
               type='email'
