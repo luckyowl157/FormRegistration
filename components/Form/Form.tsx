@@ -10,7 +10,20 @@ import EyeOff from './img/EyeOff';
 //styles
 import s from './Form.module.sass';
 
-export default function Form({ }) {
+interface Labels {
+  data: {
+    firstName: string,
+    lastName: string,
+    address: string,
+    userEmail: string,
+    phone: string,
+    password: string,
+    confirmPassword: string,
+    button: string
+  }
+}
+
+export default function Form({ data }: Labels) {
   const [fields, setFields] = useState({
     name: '',
     lastName: '',
@@ -102,7 +115,7 @@ export default function Form({ }) {
       <div className={s.formWrap}>
         <form onSubmit={handleSubmit} autoComplete='none'>
           <div className={s.formGroup}>
-            <label htmlFor='name'>First Name <span className={s.required}>*</span></label>
+            <label htmlFor='name'>{data.firstName} <span className={s.required}>*</span></label>
             <input
               id='name'
               type='text'
@@ -113,7 +126,7 @@ export default function Form({ }) {
             {errors.name && <span className={s.errorText}>{errors.name}</span>}
           </div>
           <div className={s.formGroup}>
-            <label htmlFor='lastname'>Last Name</label>
+            <label htmlFor='lastname'>{data.lastName}</label>
             <input
               id='lastname'
               type='text'
@@ -124,7 +137,7 @@ export default function Form({ }) {
             {errors.lastName && <span className={s.errorText}>{errors.lastName}</span>}
           </div>
           <div className={s.formGroup}>
-            <label htmlFor='address'>Your Address</label>
+            <label htmlFor='address'>{data.address}</label>
             <input
               id='address'
               type='text'
@@ -133,7 +146,7 @@ export default function Form({ }) {
             />
           </div>
           <div className={s.formGroup}>
-            <label htmlFor='email'>Email <span className={s.required}>*</span></label>
+            <label htmlFor='email'>{data.userEmail} <span className={s.required}>*</span></label>
             <input
               id='email'
               type='email'
@@ -144,7 +157,7 @@ export default function Form({ }) {
             {errors.email && <span className={s.errorText}>{errors.email}</span>}
           </div>
           <div className={s.formGroup}>
-            <label htmlFor='phone'>Phone Number</label>
+            <label htmlFor='phone'>{data.phone}</label>
             <input
               id='phone'
               type='tel'
@@ -153,7 +166,7 @@ export default function Form({ }) {
             />
           </div>
           <div className={s.formGroup}>
-            <label htmlFor='password'>Password</label>
+            <label htmlFor='password'>{data.password}</label>
             <input
               id='password'
               type={isShowPassword ? 'text' : 'password'}
@@ -172,7 +185,7 @@ export default function Form({ }) {
             {errors.password && <span className={s.errorText}>{errors.password}</span>}
           </div>
           <div className={s.formGroup}>
-            <label htmlFor='confirmPassword'>Confirm Password</label>
+            <label htmlFor='confirmPassword'>{data.confirmPassword}</label>
             <input
               id='confirmPassword'
               type={isShowConfirmPassword ? 'text' : 'password'}
@@ -191,7 +204,7 @@ export default function Form({ }) {
             {errors.confirmPassword && <span className={s.errorText}>{errors.confirmPassword}</span>}
           </div>
           {errors.general && <span className={s.errorText}>{errors.general}</span>}
-          <button type='submit'>Create Account</button>
+          <button type='submit'>{data.button}</button>
         </form>
       </div>
     </section>

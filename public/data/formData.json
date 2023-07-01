@@ -1,0 +1,10 @@
+{
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "address": "Your Address",
+  "userEmail": "Email",
+  "phone": "Phone Number",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "button": "Create Account"
+}

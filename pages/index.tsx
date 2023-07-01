@@ -1,6 +1,9 @@
 //components
 import Form from '@/components/Form/Form'
 
+// data
+import data from '@/public/data/formData.json'
+
 export default function Home() {
 
   return (
@@ -8,7 +11,7 @@ export default function Home() {
       <title>Registration</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <main>
-        <Form />
+        <Form data={data} />
       </main>
     </>
   )
