@@ -1,89 +1,84 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios'
-import Swal from 'sweetalert2'
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
-import Eye from './img/Eye'
-import EyeOff from './img/EyeOff'
+//password icons
+import Eye from './img/Eye';
+import EyeOff from './img/EyeOff';
 
 //styles
-import s from './Form.module.sass'
+import s from './Form.module.sass';
 
 export default function Form({ }) {
+  const [fields, setFields] = useState({
+    name: '',
+    lastName: '',
+    address: '',
+    phone: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
 
-  const [name, setName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [address, setAddress] = useState('')
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isShowPassword, setIsShowPassword] = useState(false)
-  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false)
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    setErrors({})
-  }, [name, email, phone, password, confirmPassword])
-
+    setErrors({});
+  }, [fields.name, fields.email, fields.phone, fields.password, fields.confirmPassword]);
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!name || name.length < 3) {
-      setErrors({ ...errors, name: 'Name is required and should contain at least 3 characters' })
-      return
+    if (!fields.name || fields.name.length < 3) {
+      setErrors({ ...errors, name: 'Name is required and should contain at least 3 characters' });
+      return;
     }
 
-    if (!email || !validateEmail(email)) {
-      setErrors({ ...errors, email: 'Email is required and should be in a valid email format.' })
-      return
+    if (!fields.email || !validateEmail(fields.email)) {
+      setErrors({ ...errors, email: 'Email is required and should be in a valid email format.' });
+      return;
     }
 
-    if (password !== confirmPassword) {
-      console.log('passwords are not match')
-      setErrors({ ...errors, password: 'Passwords do not match' })
-      return
+    if (fields.password !== fields.confirmPassword) {
+      console.log('passwords are not match');
+      setErrors({ ...errors, password: 'Passwords do not match' });
+      return;
     }
 
-
-    if (!isPasswordStrong(password)) {
-      setErrors({ ...errors, password: 'Password should contain at least one uppercase letter, one lowercase letter, one special character and minimum 6 characters' })
-      return
+    if (!isPasswordStrong(fields.password)) {
+      setErrors({
+        ...errors,
+        password: 'Password should contain at least one uppercase letter, one lowercase letter, one special character and minimum 6 characters'
+      });
+      return;
     }
 
     try {
-      const response = await axios.post('/api/register', {
-        name,
-        lastName,
-        phone,
-        address,
-        email,
-        password,
-        confirmPassword
-      })
-      console.log('Registration successful:', response.data.userData)
-      router.push('/success')
+      const response = await axios.post('/api/register', fields);
+      console.log('Registration successful:', response.data.userData);
+      router.push('/success');
     } catch (error: any) {
-      console.log('Registration Error:', error)
+      console.log('Registration Error:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error! Try Again',
         text: error.message
-      })
+      });
     }
-  }
+  };
 
   const togglePassword = () => {
-    setIsShowPassword(!isShowPassword)
-  }
+    setIsShowPassword(!isShowPassword);
+  };
 
   const toggleConfirmPassword = () => {
-    setIsShowConfirmPassword(!isShowConfirmPassword)
-  }
-
+    setIsShowConfirmPassword(!isShowConfirmPassword);
+  };
 
   const isPasswordStrong = (password: string): boolean => {
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[`!@#$%^&*.,\-_()+=|\\/}{'";:/?<>]).{6,}$/;
@@ -91,8 +86,15 @@ export default function Form({ }) {
   };
 
   const validateEmail = (email: string): boolean => {
-    const regex = /^[a-zA-Z0-9!@#$%^&*.,\\\-_()+=|\\/}{'";:/?<>]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
+    const regex = /^[a-zA-Z0-9!@#$%^&*.,\\\-_()+=|\\/}{'";:/?<>]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
     return regex.test(email);
+  };
+
+  const handleFieldChange = (field: string, value: string) => {
+    setFields(prevFields => ({
+      ...prevFields,
+      [field]: value
+    }));
   };
 
   return (
@@ -104,22 +106,19 @@ export default function Form({ }) {
             <input
               id='name'
               type='text'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={fields.name}
+              onChange={(e) => handleFieldChange('name', e.target.value)}
               className={errors.name ? s.errorInput : ''}
             />
-            {errors.name
-              ? <span className={s.errorText}>{errors.name}</span>
-              : ''
-            }
+            {errors.name && <span className={s.errorText}>{errors.name}</span>}
           </div>
           <div className={s.formGroup}>
             <label htmlFor='lastname'>Last Name</label>
             <input
               id='lastname'
               type='text'
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              value={fields.lastName}
+              onChange={(e) => handleFieldChange('lastName', e.target.value)}
               className={errors.lastName ? s.errorInput : ''}
             />
             {errors.lastName && <span className={s.errorText}>{errors.lastName}</span>}
@@ -129,8 +128,8 @@ export default function Form({ }) {
             <input
               id='address'
               type='text'
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              value={fields.address}
+              onChange={(e) => handleFieldChange('address', e.target.value)}
             />
           </div>
           <div className={s.formGroup}>
@@ -138,8 +137,8 @@ export default function Form({ }) {
             <input
               id='email'
               type='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={fields.email}
+              onChange={(e) => handleFieldChange('email', e.target.value)}
               className={errors.email ? s.errorInput : ''}
             />
             {errors.email && <span className={s.errorText}>{errors.email}</span>}
@@ -149,8 +148,8 @@ export default function Form({ }) {
             <input
               id='phone'
               type='tel'
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={fields.phone}
+              onChange={(e) => handleFieldChange('phone', e.target.value)}
             />
           </div>
           <div className={s.formGroup}>
@@ -158,8 +157,8 @@ export default function Form({ }) {
             <input
               id='password'
               type={isShowPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={fields.password}
+              onChange={(e) => handleFieldChange('password', e.target.value)}
               className={errors.password ? s.errorInput : ''}
             />
             <span
@@ -177,8 +176,8 @@ export default function Form({ }) {
             <input
               id='confirmPassword'
               type={isShowConfirmPassword ? 'text' : 'password'}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={fields.confirmPassword}
+              onChange={(e) => handleFieldChange('confirmPassword', e.target.value)}
               className={errors.confirmPassword ? s.errorInput : ''}
             />
             <span
@@ -197,4 +196,4 @@ export default function Form({ }) {
       </div>
     </section>
   );
-};
+}
